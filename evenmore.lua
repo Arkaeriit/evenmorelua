@@ -28,7 +28,7 @@ end
 function sizeChange(sizeT) --revoie un bouléen informant d'un éventuel changement de l'écrant
     local check = {}
     check.y,check.x = getmaxyx()
-    if check.x ~= sizeT.x and check.y ~= sizeT.y then --si il y a changement on met à jour sizeT
+    if check.x ~= sizeT.x or check.y ~= sizeT.y then --si il y a changement on met à jour sizeT
         sizeT.x = check.x
         sizeT.y = check.y
         return true
