@@ -16,7 +16,7 @@ function main(fichier)
     end
     local formatTab = {}
     local actLine = 1 --la ligne à laquelle on commence à lire
-    while c~="q" and c~="Q" do
+    while c~="q" and c~="Q" and c~="KEY_END" do
         if sizeChange(sizeT) then
             formatTab = formatage(tabFich,sizeT.x)
         end
