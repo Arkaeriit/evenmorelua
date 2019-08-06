@@ -3,6 +3,10 @@ function main(fichier)
     noecho()
     curs_set(0)
     local sizeT = {x = 0,y = 0} --on impose des valeurs nulles pour forcer un calcul au début
+    start_color()
+    local dataFile = getDataFile()
+    local couleurs = readDataFile(dataFile)
+    cl_color(couleurs.texte,couleurs.fond)
     local c = "" --le carractère tampon pour l'input de l'utilisateur
     local tabFich = convertFichTable(fichier)
     local formatTab = {}
@@ -15,14 +19,19 @@ function main(fichier)
         c = getch()
         if c == "KEY_UP" and actLine > 1 then
             actLine = actLine - 1
-        elseif c== "KEY_DOWN" then
+        elseif c == "KEY_DOWN" then
             actLine = actLine + 1
+        elseif c == "KEY_LEFT" then
+            editCouleur(couleurs,false,-1)
+        elseif c == "KEY_RIGHT" then    
+           editCouleur(couleurs,false,1)
         end
         if actLine > #formatTab then --si un resize fait que la position n'est plus bonne à répare le truc, //à changer
             actLine = #formatTab
         end
     end
     endwin()
+    saveColor(dataFile,couleurs)
 end
     
 function sizeChange(sizeT) --revoie un bouléen informant d'un éventuel changement de l'écrant
@@ -100,5 +109,50 @@ function clean(sizeT) --enlève tout ce qui peut nous déranger de l'écrant
     end
 end
 
---function main(fichier) initscr() local sizeT={} sizeT.y,sizeT.x = getmaxyx() displayMinimal(formatage(convertFichTable(fichier),sizeT.x),sizeT,1) getch() endwin() end --test de l'affichage
+function readDataFile(file) --permet de lire les informations sur les couleurs qui sont stockées dans ~/.ASC/evenmorekua/dataFile
+    local f = io.open(file,"r")
+    ret = {}
+    if f then
+        ret.fond = f:read()
+        ret.texte = f:read()
+        f:close()
+    else
+        ret.fond = 0
+        ret.texte = 15
+    end
+    return ret
+end
 
+function editCouleur(couleurs,boolFond,mod) --édite les couleurs et boolFond permet de savoir si on change le fond ou le texte; mod vaut +1 ou -1 en fonctions du changement que l'on veut
+    if boolFond then
+        couleurs.fond = math.floor(couleurs.fond + mod)
+        if couleurs.fond < 0 then
+            couleurs.fond = 15
+        end
+        if couleurs.fond > 15 then
+            couleurs.fond = 0
+        end
+    else
+        couleurs.texte = math.floor(couleurs.texte + mod)
+        if couleurs.texte < 0 then
+            couleurs.texte = 15
+        end
+        if couleurs.texte > 15 then
+            couleurs.texte = 0
+        end
+    end
+    cl_color(couleurs.texte,couleurs.fond)
+end
+
+function saveColor(file,couleurs)
+    local p = io.open(file,"w")
+    p:write(tostring(couleurs.fond),"\n",tostring(couleurs.texte))
+    p:close()
+end
+
+function getDataFile()
+    f=io.popen("echo $HOME","r") --récupération du nom du sossier maison
+    local home=f:read()
+    f:close()
+    return home.."/.ASC/evenmorelua/dataFile"
+end
