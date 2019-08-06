@@ -120,12 +120,14 @@ function display(formatTab,sizeT,ligne,boolPosition,couleurs) --affiche la le te
     end
     if boolPosition then
         local pourcent = (ligne/#formatTab)*100
+        local mod = 0
         if pourcent < 10 then
             pourcent = tostring(pourcent):sub(1,1)
+            mod = 1
         else
             pourcent = tostring(pourcent):sub(1,2)
         end
-        mvprintw(0,sizeT.x-7," "..pourcent.." % ")
+        mvprintw(0,sizeT.x-7+mod," "..pourcent.." % ")
     end
     refresh()
 end
