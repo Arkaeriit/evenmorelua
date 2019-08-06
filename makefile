@@ -17,3 +17,12 @@ clean :
 test : clean evenmorelua
 	./evenmorelua main.c
 
+install : evenmorelua evenmore.lua
+	mkdir /usr/local/share/evenmorelua
+	cp evenmorelua /usr/local/bin
+	cp evenmore.lua /usr/local/share/evenmorelua
+	
+uninstall : clean
+	rm -fR /usr/local/share/evenmorelua
+	rm /usr/local/bin/evenmorelua
+	

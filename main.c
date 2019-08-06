@@ -18,17 +18,21 @@ int main(int argc,char** argv){
     cl_include(L);
 
     //On charge le fichier
-    luaL_dofile(L,"evenmore.lua");
+    luaL_dofile(L,"/usr/local/share/evenmorelua/evenmore.lua");
+    
+    if(argc>1){
+        //On appelle la fonction
+        lua_getglobal(L,"main");
 
-    //On appelle la fonction
-    lua_getglobal(L,"main");
-
-    //On apelle l'argument
-    lua_pushstring(L,*(argv+1));
-    //On execute la fonction
-    lua_call(L,1,0);
-
-    // Cleanup:  Deallocate all space assocatated with the lua state */
+        //On apelle l'argument
+        lua_pushstring(L,*(argv+1));
+        //On execute la fonction
+        lua_call(L,1,0);
+    }else{
+        lua_getglobal(L,"informations");
+        lua_call(L,0,0);
+    }
+    // Cleanup
     lua_close(L);
 
     return 0;

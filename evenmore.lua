@@ -9,6 +9,11 @@ function main(fichier)
     cl_color(couleurs.texte,couleurs.fond)
     local c = "" --le carractère tampon pour l'input de l'utilisateur
     local tabFich = convertFichTable(fichier)
+    if not tabFich then
+        endwin()
+        io.stderr:write("Cannot show '"..fichier.."': No such file\n")
+        return nil
+    end
     local formatTab = {}
     local actLine = 1 --la ligne à laquelle on commence à lire
     while c~="q" and c~="Q" do
@@ -60,6 +65,7 @@ end
 function convertFichTable(fichier) --converti le contenu du fichier dans une table ou chaque ligne correspond à un élément de la table
 	local tab={}
 	local f=io.open(fichier,"r")
+    if not f then return false end --si le fichier n'existe pas on envoie un message disant cela
 	local num=1
 	local flag=true
 	while f and flag do
@@ -112,14 +118,14 @@ function displayMinimal(formatTab,sizeT,ligne) --affiche la le texte à partir d
 end
 
 function clean(sizeT) --enlève tout ce qui peut nous déranger de l'écrant
-    for x=0,sizeT.x-1 do
-        for y=0,sizeT.y-1 do
+    for x=0,sizeT.x+5 do
+        for y=0,sizeT.y+5 do
             mvprintw(y,x," ")
         end
     end
 end
 
-function readDataFile(file) --permet de lire les informations sur les couleurs qui sont stockées dans ~/.ASC/evenmorekua/dataFile
+function readDataFile(file) --permet de lire les informations sur les couleurs qui sont stockées dans ~/.ASC/evenmorelua/dataFile
     local f = io.open(file,"r")
     ret = {}
     if f then
@@ -129,6 +135,7 @@ function readDataFile(file) --permet de lire les informations sur les couleurs q
     else
         ret.fond = 0
         ret.texte = 15
+        os.execute("mkdir -p ~/.ASC/evenmorelua")
     end
     return ret
 end
@@ -161,8 +168,13 @@ function saveColor(file,couleurs)
 end
 
 function getDataFile()
-    f=io.popen("echo $HOME","r") --récupération du nom du sossier maison
+    local f=io.popen("echo $HOME","r") --récupération du nom du sossier maison
     local home=f:read()
     f:close()
     return home.."/.ASC/evenmorelua/dataFile"
 end
+
+function informations()
+    io.stderr:write("Usage : evenmorelua <file>\n")
+end
+
