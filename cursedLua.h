@@ -21,6 +21,7 @@ int cl_getxy(lua_State *L); //Permet de savoir les dimentions de l'écrant
 int cl_getch(lua_State *L); //Permet de récupérer les inputs de l'utilisateur
 int cl_hascolor(lua_State *L);
 int cl_startcolor(lua_State *L);
+int cl_defaultcolors(lua_State *L); //permet d'avoir use_deffault_colors
 
 //Fonctions servant à écrire sur l'écrant
 

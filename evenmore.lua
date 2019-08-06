@@ -4,6 +4,7 @@ function main(fichier)
     curs_set(0)
     local sizeT = {x = 0,y = 0} --on impose des valeurs nulles pour forcer un calcul au début
     start_color()
+    use_default_colors()
     local dataFile = getDataFile()
     local couleurs = readDataFile(dataFile)
     cl_color(couleurs.texte,couleurs.fond)
@@ -143,11 +144,11 @@ end
 function editCouleur(couleurs,boolFond,mod) --édite les couleurs et boolFond permet de savoir si on change le fond ou le texte; mod vaut +1 ou -1 en fonctions du changement que l'on veut
     if boolFond then
         couleurs.fond = math.floor(couleurs.fond + mod)
-        if couleurs.fond < 0 then
+        if couleurs.fond < -1 then
             couleurs.fond = 15
         end
         if couleurs.fond > 15 then
-            couleurs.fond = 0
+            couleurs.fond = -1
         end
     else
         couleurs.texte = math.floor(couleurs.texte + mod)

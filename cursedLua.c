@@ -92,6 +92,10 @@ int cl_startcolor(lua_State *L){
     return 0;
 }
 
+int cl_defaultcolors(lua_State *L){
+    use_default_colors();
+    return 0;
+}
 
 int cl_mvprintw(lua_State *L){
     const char* str = luaL_checkstring(L,3);
@@ -104,6 +108,7 @@ int cl_mvprintw(lua_State *L){
 int cl_colors(lua_State *L){
     int color2 = luaL_checknumber(L,2);
     int color1 = luaL_checknumber(L,1);
+    use_default_colors();
     if(has_colors()){
         init_pair(1,color1,color2);
         wbkgd(stdscr,COLOR_PAIR(1));
@@ -136,7 +141,10 @@ void cl_include(lua_State *L){
     lua_setglobal(L,"cl_color");
     lua_pushcfunction(L,cl_startcolor);
     lua_setglobal(L,"start_color");
+    lua_pushcfunction(L,cl_defaultcolors);
+    lua_setglobal(L,"use_default_colors");
 }
+
 
 
 
