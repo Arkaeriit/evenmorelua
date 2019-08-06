@@ -33,7 +33,7 @@ function main(fichier)
         elseif c == "KEY_LEFT" then --couleur
             editCouleur(couleurs,false,-1)
         elseif c == "KEY_RIGHT" then    
-           editCouleur(couleurs,false,1)
+            editCouleur(couleurs,false,1)
         elseif c == "n" then
             editCouleur(couleurs,true,1)
         elseif c == "b" then

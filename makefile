@@ -2,7 +2,7 @@
 all : evenmorelua
 
 evenmorelua : main.o cursedLua.o evenmore.lua
-	gcc main.o cursedlua.o -lncurses -llua -lm -ldl -o evenmorelua
+	gcc main.o cursedlua.o -llua -lm -ldl -lncursesw -o evenmorelua
 
 main.o : main.c cursedLua.h
 	gcc -c main.c -o main.o
@@ -24,5 +24,10 @@ install : evenmorelua evenmore.lua
 	
 uninstall : clean
 	rm -fR /usr/local/share/evenmorelua
-	rm /usr/local/bin/evenmorelua
+	rm -f /usr/local/bin/evenmorelua
 	
+reinstall : uninstall install
+
+evaluate : reinstall 
+	evenmorelua main.c
+

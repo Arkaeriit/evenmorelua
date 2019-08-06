@@ -2,6 +2,7 @@
 #include "cursedLua.h"
 
 int cl_init(lua_State *L){
+    setlocale(LC_ALL,"");
     initscr();
     return 0;
 }
@@ -104,8 +105,8 @@ int cl_colors(lua_State *L){
     int color2 = luaL_checknumber(L,2);
     int color1 = luaL_checknumber(L,1);
     if(has_colors()){
-        init_pair(COLOR_PAIRS - 1,color1,color2);
-        attron(COLOR_PAIR(COLOR_PAIRS - 1));
+        init_pair(1,color1,color2);
+        wbkgd(stdscr,COLOR_PAIR(1));
     }
     return 0;
 }

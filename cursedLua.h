@@ -7,6 +7,7 @@
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
+#include <locale.h>
 
 //Foncions qui servent à un crontrole général de l'écrant
 
