@@ -17,17 +17,27 @@ function main(fichier)
         end
         displayMinimal(formatTab,sizeT,actLine)
         c = getch()
-        if c == "KEY_UP" and actLine > 1 then
+        if c == "KEY_UP" and actLine > 1 then --déplacement
             actLine = actLine - 1
         elseif c == "KEY_DOWN" then
             actLine = actLine + 1
-        elseif c == "KEY_LEFT" then
+        elseif c == "KEY_NPAGE" then
+            actLine = actLine + sizeT.y
+        elseif c == "KEY_PPAGE" then
+            actLine = actLine - sizeT.y
+        elseif c == "KEY_LEFT" then --couleur
             editCouleur(couleurs,false,-1)
         elseif c == "KEY_RIGHT" then    
            editCouleur(couleurs,false,1)
+        elseif c == "n" then
+            editCouleur(couleurs,true,1)
+        elseif c == "b" then
+            editCouleur(couleurs,true,-1)
         end
         if actLine > #formatTab then --si un resize fait que la position n'est plus bonne à répare le truc, //à changer
             actLine = #formatTab
+        elseif actLine < 1 then
+            actLine = 1
         end
     end
     endwin()
