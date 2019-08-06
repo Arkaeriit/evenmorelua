@@ -17,11 +17,12 @@ function main(fichier)
     end
     local formatTab = {}
     local actLine = 1 --la ligne à laquelle on commence à lire
+    local boolPosition = false -- booleen qui sert à savoir si on veut que la position soit affichée en haut à droite de l'écran
     while c~="q" and c~="Q" and c~="KEY_END" do
         if sizeChange(sizeT) then
             formatTab = formatage(tabFich,sizeT.x)
         end
-        displayMinimal(formatTab,sizeT,actLine)
+        display(formatTab,sizeT,actLine,boolPosition,couleurs)
         c = getch()
         if c == "KEY_UP" and actLine > 1 then --déplacement
             actLine = actLine - 1
@@ -39,6 +40,8 @@ function main(fichier)
             editCouleur(couleurs,true,1)
         elseif c == "b" then
             editCouleur(couleurs,true,-1)
+        elseif c == "p" then --affichage de la position
+            boolPosition = not boolPosition
         end
         if actLine > #formatTab then --si un resize fait que la position n'est plus bonne à répare le truc, //à changer
             actLine = #formatTab
@@ -108,12 +111,21 @@ function sous_formatage(formatTab,tailleMax) --découpe au besoin la dernière l
     end
 end
 
-function displayMinimal(formatTab,sizeT,ligne) --affiche la le texte à partir de la ligne ligne
+function display(formatTab,sizeT,ligne,boolPosition,couleurs) --affiche la le texte à partir de la ligne ligne
     clean(sizeT)
     for y=0,sizeT.y-1 do
         if formatTab[ligne+y] then
             mvprintw(y,0,formatTab[ligne+y])
         end
+    end
+    if boolPosition then
+        local pourcent = (ligne/#formatTab)*100
+        if pourcent < 10 then
+            pourcent = tostring(pourcent):sub(1,1)
+        else
+            pourcent = tostring(pourcent):sub(1,2)
+        end
+        mvprintw(0,sizeT.x-7," "..pourcent.." % ")
     end
     refresh()
 end

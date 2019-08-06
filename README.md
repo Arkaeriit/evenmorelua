@@ -17,3 +17,7 @@ Use up/down and page-up/page-down to navigate in a file.
 
 Use left/right to change the text color and use the keys 'b' and 'n' to change the background color. 
 
+Use the key 'p' to show your position in the text.
+
+Use the key 'q' to quit
+
