@@ -26,8 +26,3 @@ uninstall : clean
 	rm -fR /usr/local/share/evenmorelua
 	rm -f /usr/local/bin/evenmorelua
 	
-reinstall : uninstall install
-
-evaluate : reinstall 
-	evenmorelua main.c
-

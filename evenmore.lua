@@ -7,7 +7,9 @@ function main(fichier)
     use_default_colors()
     local dataFile = getDataFile()
     local couleurs = readDataFile(dataFile)
-    cl_color(couleurs.texte,couleurs.fond)
+    init_pair(1,couleurs.texte,couleurs.fond)
+    init_pair(2,couleurs.fond,couleurs.texte)
+    set_color(1)
     local c = "" --le carractère tampon pour l'input de l'utilisateur
     local tabFich = convertFichTable(fichier)
     if not tabFich then
@@ -124,10 +126,15 @@ function display(formatTab,sizeT,ligne,boolPosition,couleurs) --affiche la le te
         if pourcent < 10 then
             pourcent = tostring(pourcent):sub(1,1)
             mod = 1
+        elseif pourcent >= 100 then
+            pourcent = "100"
+            mod = -1
         else
             pourcent = tostring(pourcent):sub(1,2)
         end
+        set_color(2)
         mvprintw(0,sizeT.x-7+mod," "..pourcent.." % ")
+        set_color(1)
     end
     refresh()
 end
@@ -173,7 +180,8 @@ function editCouleur(couleurs,boolFond,mod) --édite les couleurs et boolFond pe
             couleurs.texte = 0
         end
     end
-    cl_color(couleurs.texte,couleurs.fond)
+    init_pair(1,couleurs.texte,couleurs.fond)
+    init_pair(2,couleurs.fond,couleurs.texte)
 end
 
 function saveColor(file,couleurs)
