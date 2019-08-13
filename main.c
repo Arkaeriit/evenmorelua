@@ -18,7 +18,7 @@ int main(int argc,char** argv){
     cl_include(L);
 
     //On charge le fichier
-    luaL_dofile(L,"/usr/local/share/evenmorelua/evenmore.lua");
+    luaL_dofile(L,"/usr/local/share/evenmorelua/evenmore.luac");
     
     if(argc>1){
         //On appelle la fonction

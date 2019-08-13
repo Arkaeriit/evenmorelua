@@ -157,7 +157,7 @@ function readDataFile(file) --permet de lire les informations sur les couleurs q
     else
         ret.fond = 0
         ret.texte = 15
-        os.execute("mkdir -p ~/.ASC/evenmorelua")
+        os.execute("mkdir -p ~/.config/ASC/evenmorelua")
     end
     return ret
 end
@@ -194,7 +194,7 @@ function getDataFile()
     local f=io.popen("echo $HOME","r") --récupération du nom du sossier maison
     local home=f:read()
     f:close()
-    return home.."/.ASC/evenmorelua/dataFile"
+    return home.."/.config/ASC/evenmorelua/dataFile"
 end
 
 function informations()
