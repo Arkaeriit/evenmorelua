@@ -22,9 +22,9 @@ test : clean evenmorelua
 	./evenmorelua main.c
 
 install : evenmorelua evenmore.luac
-	mkdir /usr/local/share/evenmorelua
-	cp evenmorelua /usr/local/bin
-	cp evenmore.luac /usr/local/share/evenmorelua
+	mkdir -p /usr/local/share/evenmorelua
+	cp -f evenmorelua /usr/local/bin
+	cp -f evenmore.luac /usr/local/share/evenmorelua
 	
 uninstall : clean
 	rm -fR /usr/local/share/evenmorelua
