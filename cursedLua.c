@@ -3,7 +3,7 @@
 
 int cl_init(lua_State *L){
     setlocale(LC_ALL,"");
-    initscr();
+    newterm(NULL,NULL,stdout); //on utilise cela si on veux que le programme vienne d'un pipe
     return 0;
 }
 
@@ -24,7 +24,7 @@ int cl_close(lua_State *L){
 
 int cl_cursset(lua_State *L){
     int s = luaL_checknumber(L,1);
-    if(s==0 | s==1 | s==2) curs_set(s);
+    if( (s==0) | (s==1) | (s==2) ) curs_set(s);
     return 0;
 }
 
@@ -43,6 +43,7 @@ int cl_getxy(lua_State *L){
 }
 
 int cl_getch(lua_State *L){
+    fseek(stdin,0,SEEK_END);
     keypad(stdscr,TRUE);
     int elem = getch();
     switch(elem){

@@ -7,11 +7,14 @@ This program let you choose the color theme you want and include word-warping to
 
 ![Alt text](https://i.imgur.com/bXeO2bS.png "Reading a file")
 
+## Installation
 To install this just use 
 ```bash
 make && sudo make install
 ```
-To use it use envenmorelua and then the name of the file you want to open as the first argument.
+
+## User manual
+To use it do  `envenmorelua file.txt` to display file.txt or do `some-commands | evemorelua` to read the result from some-commands in the nice display from evenmorelua.
 
 Use up/down and page-up/page-down to navigate in a file.
 

@@ -198,6 +198,8 @@ function getDataFile()
 end
 
 function informations()
-    io.stderr:write("Usage : evenmorelua <file>\n")
+    io.stderr:write("This program is meant to nicely display text on a terminal.\n")
+    io.stderr:write("Usage : evenmorelua [file]\n")
+    io.stderr:write("If file is not specified it will try to read from stdin.\n")
 end
 

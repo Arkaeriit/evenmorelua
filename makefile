@@ -1,17 +1,20 @@
 
 all : evenmorelua
 
-evenmorelua : main.o cursedLua.o evenmore.lua evenmore.luac
-	gcc main.o cursedlua.o -llua -lm -ldl -lncursesw -o evenmorelua
+evenmorelua : main.o cursedLua.o readSTDIN.o evenmore.lua evenmore.luac
+	gcc main.o cursedlua.o readSTDIN.o -llua -lm -ldl -lncursesw -o evenmorelua
 
 evenmore.luac : evenmore.lua
 	luac -o evenmore.luac evenmore.lua
 
 main.o : main.c cursedLua.h
-	gcc -c main.c -o main.o
+	gcc -c main.c -Wall -o main.o
 
 cursedLua.o : cursedLua.c cursedLua.h
-	gcc -c cursedLua.c -o cursedlua.o
+	gcc -c cursedLua.c -Wall -o cursedlua.o
+
+readSTDIN.o : readSTDIN.c readSTDIN.h
+	gcc -c readSTDIN.c -Wall -o readSTDIN.o
 
 clean :
 	rm -f *.o
