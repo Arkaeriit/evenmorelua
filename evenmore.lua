@@ -100,7 +100,7 @@ function sous_formatage(formatTab,tailleMax) --découpe au besoin la dernière l
     if #formatTab[#formatTab] <= tailleMax then
         return false
     else
-        pointeur = tailleMax
+        pointeur = tailleMax+1
         while pointeur > 0 and formatTab[#formatTab]:sub(pointeur,pointeur)~=" " do
             pointeur = pointeur - 1
         end
