@@ -6,7 +6,7 @@ function main(fichier)
     start_color()
     use_default_colors()
     local dataFile = getDataFile()
-    local couleurs = readDataFile(dataFile)
+    local couleurs,boolPositionOrigine = readDataFile(dataFile)
     init_pair(1,couleurs.texte,couleurs.fond)
     init_pair(2,couleurs.fond,couleurs.texte)
     set_color(1)
@@ -19,13 +19,14 @@ function main(fichier)
     end
     local formatTab = {}
     local actLine = 1 --la ligne à laquelle on commence à lire
-    local boolPosition = false -- booleen qui sert à savoir si on veut que la position soit affichée en haut à droite de l'écran
+    local boolPosition = boolPositionOrigine -- booleen qui sert à savoir si on veut que la position soit affichée en haut à droite de l'écran
     while c~="q" and c~="Q" and c~="KEY_END" do
         if sizeChange(sizeT) then
             formatTab = formatage(tabFich,sizeT.x)
+            display(formatTab,sizeT,actLine,boolPosition)
         end
-        display(formatTab,sizeT,actLine,boolPosition,couleurs)
         c = getch()
+        display(formatTab,sizeT,actLine,boolPosition)
         if c == "KEY_UP" and actLine > 1 then --déplacement
             actLine = actLine - 1
         elseif c == "KEY_DOWN" then
@@ -44,6 +45,10 @@ function main(fichier)
             editCouleur(couleurs,true,-1)
         elseif c == "p" then --affichage de la position
             boolPosition = not boolPosition
+        elseif c == "P" then --on sauvegarde la valeur par défaut de l'affichage de la position
+            boolPositionOrigine = boolPosition
+            saveData(dataFile,couleurs,boolPositionOrigine)
+            displayPositionSeting(boolPositionOrigine,sizeT)
         end
         if actLine > #formatTab then --si un resize fait que la position n'est plus bonne à répare le truc, //à changer
             actLine = #formatTab
@@ -52,7 +57,7 @@ function main(fichier)
         end
     end
     endwin()
-    saveColor(dataFile,couleurs)
+    saveData(dataFile,couleurs,boolPositionOrigine)
 end
     
 function sizeChange(sizeT) --revoie un bouléen informant d'un éventuel changement de l'écrant
@@ -113,7 +118,7 @@ function sous_formatage(formatTab,tailleMax) --découpe au besoin la dernière l
     end
 end
 
-function display(formatTab,sizeT,ligne,boolPosition,couleurs) --affiche la le texte à partir de la ligne ligne
+function display(formatTab,sizeT,ligne,boolPosition) --affiche la le texte à partir de la ligne ligne
     clean(sizeT)
     for y=0,sizeT.y-1 do
         if formatTab[ligne+y] then
@@ -139,6 +144,20 @@ function display(formatTab,sizeT,ligne,boolPosition,couleurs) --affiche la le te
     refresh()
 end
 
+function displayPositionSeting(boolPositionOrigine,sizeT)
+    local str
+    if boolPositionOrigine then
+        str = "on"
+    else
+        str = "off"
+    end
+    set_color(2)
+    mvprintw(sizeT.y-1,2," By default the position indicator will be "..str.." ")
+    set_color(1)
+    refresh()
+end
+
+
 function clean(sizeT) --enlève tout ce qui peut nous déranger de l'écrant
     for x=0,sizeT.x+5 do
         for y=0,sizeT.y+5 do
@@ -147,19 +166,22 @@ function clean(sizeT) --enlève tout ce qui peut nous déranger de l'écrant
     end
 end
 
-function readDataFile(file) --permet de lire les informations sur les couleurs qui sont stockées dans ~/.ASC/evenmorelua/dataFile
+function readDataFile(file) --permet de lire les informations sur les couleurs et l'état de l'affichage de la position qui sont stockées dans ~/.ASC/evenmorelua/dataFile
     local f = io.open(file,"r")
+    local pos = false
     ret = {}
     if f then
-        ret.fond = f:read()
-        ret.texte = f:read()
+        ret.fond = tonumber(f:read())
+        ret.texte = tonumber(f:read())
+        pos = f:read() == "true" --converti ce que l'on lit en bool
         f:close()
     else
         ret.fond = 0
         ret.texte = 15
+        ret.pos = false
         os.execute("mkdir -p ~/.config/ASC/evenmorelua")
     end
-    return ret
+    return ret,pos
 end
 
 function editCouleur(couleurs,boolFond,mod) --édite les couleurs et boolFond permet de savoir si on change le fond ou le texte; mod vaut +1 ou -1 en fonctions du changement que l'on veut
@@ -184,9 +206,9 @@ function editCouleur(couleurs,boolFond,mod) --édite les couleurs et boolFond pe
     init_pair(2,couleurs.fond,couleurs.texte)
 end
 
-function saveColor(file,couleurs)
+function saveData(file,couleurs,boolPosition)
     local p = io.open(file,"w")
-    p:write(tostring(couleurs.fond),"\n",tostring(couleurs.texte))
+    p:write(tostring(couleurs.fond),"\n",tostring(couleurs.texte),"\n",tostring(boolPosition))
     p:close()
 end
 

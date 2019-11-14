@@ -4,7 +4,7 @@
 #include "cursedLua.h"
 #include "readSTDIN.h"
 
-#define devel 0
+#define devel 1
 
 int main(int argc,char** argv){
     lua_State* L;
