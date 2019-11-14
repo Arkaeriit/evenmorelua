@@ -21,12 +21,12 @@ function main(fichier)
     local actLine = 1 --la ligne à laquelle on commence à lire
     local boolPosition = boolPositionOrigine -- booleen qui sert à savoir si on veut que la position soit affichée en haut à droite de l'écran
     while c~="q" and c~="Q" and c~="KEY_END" do
+        local toogleSavePosBool = false --sert à savoir si on doit afficher une update des paramètres
         if sizeChange(sizeT) then
             formatTab = formatage(tabFich,sizeT.x)
             display(formatTab,sizeT,actLine,boolPosition)
         end
         c = getch()
-        display(formatTab,sizeT,actLine,boolPosition)
         if c == "KEY_UP" and actLine > 1 then --déplacement
             actLine = actLine - 1
         elseif c == "KEY_DOWN" then
@@ -48,12 +48,16 @@ function main(fichier)
         elseif c == "P" then --on sauvegarde la valeur par défaut de l'affichage de la position
             boolPositionOrigine = boolPosition
             saveData(dataFile,couleurs,boolPositionOrigine)
-            displayPositionSeting(boolPositionOrigine,sizeT)
+            toogleSavePosBool = true --on doit afficher que l'on a mis a jour la position par défaut
         end
         if actLine > #formatTab then --si un resize fait que la position n'est plus bonne à répare le truc, //à changer
             actLine = #formatTab
         elseif actLine < 1 then
             actLine = 1
+        end
+        display(formatTab,sizeT,actLine,boolPosition) --on affiche
+        if toogleSavePosBool then
+            displayPositionSeting(boolPositionOrigine,sizeT)
         end
     end
     endwin()
