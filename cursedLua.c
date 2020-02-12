@@ -46,40 +46,7 @@ int cl_getch(lua_State *L){
     fseek(stdin,0,SEEK_END);
     keypad(stdscr,TRUE);
     int elem = getch();
-    switch(elem){
-        case KEY_ENTER :
-            lua_pushstring(L,"KEY_ENTER");
-            break;
-        case KEY_BACKSPACE :
-            lua_pushstring(L,"KEY_BACKSPACE" );
-            break;
-        case KEY_UP :
-            lua_pushstring(L,"KEY_UP" );
-            break;
-        case KEY_DOWN :
-            lua_pushstring(L,"KEY_DOWN" );
-            break;
-        case KEY_LEFT :
-            lua_pushstring(L,"KEY_LEFT" );
-            break;
-        case KEY_RIGHT :
-            lua_pushstring(L,"KEY_RIGHT" );
-            break;
-        case KEY_HOME :
-            lua_pushstring(L,"KEY_HOME" );
-            break;
-        case KEY_END :
-            lua_pushstring(L,"KEY_END");
-            break;
-        case KEY_NPAGE :
-            lua_pushstring(L,"KEY_NPAGE" );
-            break;
-        case KEY_PPAGE :
-            lua_pushstring(L,"KEY_PPAGE" );
-            break;
-        default :
-            lua_pushstring(L,(char*) &elem);
-    }
+    lua_pushnumber(L,elem);
     return 1;
 }
 
@@ -106,11 +73,24 @@ int cl_init_pair(lua_State *L){
     return 0;
 }
 
+int cl_printw(lua_State* L){
+    const char* str = luaL_checkstring(L,1);
+    printw("%s",str);
+    return 0;
+}
+
 int cl_mvprintw(lua_State *L){
     const char* str = luaL_checkstring(L,3);
     int x = luaL_checknumber(L,2);
     int y = luaL_checknumber(L,1);
     mvprintw(y,x,"%s",str);
+    return 0;
+}
+
+int cl_move(lua_State* L){
+    int x = luaL_checknumber(L,2);
+    int y = luaL_checknumber(L,1);
+    move(y,x);
     return 0;
 }
 
@@ -131,6 +111,21 @@ int cl_set_color(lua_State *L){
     return 0;
 }
 
+int cl_getchTime(lua_State* L){
+    int scale = luaL_checkinteger(L,2);
+    int timeout = luaL_checkinteger(L,1);
+    int ret;
+    nodelay(stdscr, TRUE);
+    for(int i=0;i<timeout;i+=scale){
+        usleep(scale);
+        ret = getch();
+        if(ret != -1) //If we entered a char we stop
+            i = timeout+1;
+    }
+    lua_pushnumber(L,ret);
+    return 1;
+}
+
 void cl_include(lua_State *L){
     lua_pushcfunction(L,cl_init);
     lua_setglobal(L,"initscr");
@@ -138,8 +133,12 @@ void cl_include(lua_State *L){
     lua_setglobal(L,"endwin");
     lua_pushcfunction(L,cl_cursset);
     lua_setglobal(L,"curs_set");
+    lua_pushcfunction(L,cl_printw);
+    lua_setglobal(L,"printw");
     lua_pushcfunction(L,cl_mvprintw);
     lua_setglobal(L,"mvprintw");
+    lua_pushcfunction(L,cl_move);
+    lua_setglobal(L,"move");
     lua_pushcfunction(L,cl_refresh);
     lua_setglobal(L,"refresh");
     lua_pushcfunction(L,cl_getxy);
@@ -162,8 +161,31 @@ void cl_include(lua_State *L){
     lua_setglobal(L,"init_pair");
     lua_pushcfunction(L,cl_set_color);
     lua_setglobal(L,"set_color");
-}
+    lua_pushcfunction(L,cl_getchTime);
+    lua_setglobal(L,"getchTime");
 
+    //Définition de caractères spréciaux
+    lua_pushnumber(L,KEY_ENTER);
+    lua_setglobal(L,"KEY_ENTER");
+    lua_pushnumber(L,KEY_BACKSPACE);
+    lua_setglobal(L,"KEY_BACKSPACE"); 
+    lua_pushnumber(L,KEY_UP);
+    lua_setglobal(L,"KEY_UP"); 
+    lua_pushnumber(L,KEY_DOWN);
+    lua_setglobal(L,"KEY_DOWN"); 
+    lua_pushnumber(L,KEY_LEFT);
+    lua_setglobal(L,"KEY_LEFT"); 
+    lua_pushnumber(L,KEY_RIGHT);
+    lua_setglobal(L,"KEY_RIGHT"); 
+    lua_pushnumber(L,KEY_HOME);
+    lua_setglobal(L,"KEY_HOME"); 
+    lua_pushnumber(L,KEY_END);
+    lua_setglobal(L,"KEY_END"); 
+    lua_pushnumber(L,KEY_NPAGE);
+    lua_setglobal(L,"KEY_NPAGE"); 
+    lua_pushnumber(L,KEY_PPAGE);
+    lua_setglobal(L,"KEY_PPAGE"); 
+}
 
 
 

@@ -20,32 +20,32 @@ function main(fichier)
     local formatTab = {}
     local actLine = 1 --la ligne à laquelle on commence à lire
     local boolPosition = boolPositionOrigine -- booleen qui sert à savoir si on veut que la position soit affichée en haut à droite de l'écran
-    while c~="q" and c~="Q" and c~="KEY_END" do
+    while c~=string.byte("q") and c~=string.byte("Q") and c~=KEY_END do
         local toogleSavePosBool = false --sert à savoir si on doit afficher une update des paramètres
         if sizeChange(sizeT) then
             formatTab = formatage(tabFich,sizeT.x)
             display(formatTab,sizeT,actLine,boolPosition)
         end
         c = getch()
-        if c == "KEY_UP" and actLine > 1 then --déplacement
+        if c == KEY_UP and actLine > 1 then --déplacement
             actLine = actLine - 1
-        elseif c == "KEY_DOWN" then
+        elseif c == KEY_DOWN then
             actLine = actLine + 1
-        elseif c == "KEY_NPAGE" then
+        elseif c == KEY_NPAGE then
             actLine = actLine + sizeT.y
-        elseif c == "KEY_PPAGE" then
+        elseif c == KEY_PPAGE then
             actLine = actLine - sizeT.y
-        elseif c == "KEY_LEFT" then --couleur
+        elseif c == KEY_LEFT then --couleur
             editCouleur(couleurs,false,-1)
-        elseif c == "KEY_RIGHT" then    
+        elseif c == KEY_RIGHT then    
             editCouleur(couleurs,false,1)
-        elseif c == "n" then
+        elseif c == string.byte("n") then
             editCouleur(couleurs,true,1)
-        elseif c == "b" then
+        elseif c == string.byte("b") then
             editCouleur(couleurs,true,-1)
-        elseif c == "p" then --affichage de la position
+        elseif c == string.byte("p") then --affichage de la position
             boolPosition = not boolPosition
-        elseif c == "P" then --on sauvegarde la valeur par défaut de l'affichage de la position
+        elseif c == string.byte("P") then --on sauvegarde la valeur par défaut de l'affichage de la position
             boolPositionOrigine = boolPosition
             saveData(dataFile,couleurs,boolPositionOrigine)
             toogleSavePosBool = true --on doit afficher que l'on a mis a jour la position par défaut
