@@ -1,43 +1,45 @@
+nc = require("cursedLua")
+
 function main(fichier)
-    initscr() --on démare ncurses
-    noecho()
-    curs_set(0)
+    nc.initscr() --on démare ncurses
+    nc.noecho()
+    nc.curs_set(0)
     local sizeT = {x = 0,y = 0} --on impose des valeurs nulles pour forcer un calcul au début
-    start_color()
-    use_default_colors()
+    nc.start_color()
+    nc.use_default_colors()
     local dataFile = getDataFile()
     local couleurs,boolPositionOrigine = readDataFile(dataFile)
-    init_pair(1,couleurs.texte,couleurs.fond)
-    init_pair(2,couleurs.fond,couleurs.texte)
-    set_color(1)
+    nc.set_color(1)
+    nc.init_pair(1,couleurs.texte,couleurs.fond)
+    nc.init_pair(2,couleurs.fond,couleurs.texte)
     local c = "" --le carractère tampon pour l'input de l'utilisateur
     local tabFich = convertFichTable(fichier)
     if not tabFich then
-        endwin()
+        nc.endwin()
         io.stderr:write("Cannot show '"..fichier.."': No such file\n")
         return nil
     end
     local formatTab = {}
     local actLine = 1 --la ligne à laquelle on commence à lire
     local boolPosition = boolPositionOrigine -- booleen qui sert à savoir si on veut que la position soit affichée en haut à droite de l'écran
-    while c~=string.byte("q") and c~=string.byte("Q") and c~=KEY_END do
+    while c~=string.byte("q") and c~=string.byte("Q") and c~=nc.KEY_END do
         local toogleSavePosBool = false --sert à savoir si on doit afficher une update des paramètres
         if sizeChange(sizeT) then
             formatTab = formatage(tabFich,sizeT.x)
             display(formatTab,sizeT,actLine,boolPosition)
         end
-        c = getch()
-        if c == KEY_UP and actLine > 1 then --déplacement
+        c = nc.getch()
+        if c == nc.KEY_UP and actLine > 1 then --déplacement
             actLine = actLine - 1
-        elseif c == KEY_DOWN then
+        elseif c == nc.KEY_DOWN then
             actLine = actLine + 1
-        elseif c == KEY_NPAGE then
+        elseif c == nc.KEY_NPAGE then
             actLine = actLine + sizeT.y
-        elseif c == KEY_PPAGE then
+        elseif c == nc.KEY_PPAGE then
             actLine = actLine - sizeT.y
-        elseif c == KEY_LEFT then --couleur
+        elseif c == nc.KEY_LEFT then --couleur
             editCouleur(couleurs,false,-1)
-        elseif c == KEY_RIGHT then    
+        elseif c == nc.KEY_RIGHT then    
             editCouleur(couleurs,false,1)
         elseif c == string.byte("n") then
             editCouleur(couleurs,true,1)
@@ -60,13 +62,13 @@ function main(fichier)
             displayPositionSeting(boolPositionOrigine,sizeT)
         end
     end
-    endwin()
+    nc.endwin()
     saveData(dataFile,couleurs,boolPositionOrigine)
 end
     
 function sizeChange(sizeT) --revoie un bouléen informant d'un éventuel changement de l'écrant
     local check = {}
-    check.y,check.x = getmaxyx()
+    check.y,check.x = nc.getmaxyx()
     if check.x ~= sizeT.x or check.y ~= sizeT.y then --si il y a changement on met à jour sizeT
         sizeT.x = check.x
         sizeT.y = check.y
@@ -75,7 +77,6 @@ function sizeChange(sizeT) --revoie un bouléen informant d'un éventuel changem
         return false
     end
 end
-
 
 function convertFichTable(fichier) --converti le contenu du fichier dans une table ou chaque ligne correspond à un élément de la table
 	local tab={}
@@ -126,7 +127,7 @@ function display(formatTab,sizeT,ligne,boolPosition) --affiche la le texte à pa
     clean(sizeT)
     for y=0,sizeT.y-1 do
         if formatTab[ligne+y] then
-            mvprintw(y,0,formatTab[ligne+y])
+            nc.mvprintw(y,0,formatTab[ligne+y])
         end
     end
     if boolPosition then
@@ -141,11 +142,11 @@ function display(formatTab,sizeT,ligne,boolPosition) --affiche la le texte à pa
         else
             pourcent = tostring(pourcent):sub(1,2)
         end
-        set_color(2)
-        mvprintw(0,sizeT.x-7+mod," "..pourcent.." % ")
-        set_color(1)
+        nc.set_color(2)
+        nc.mvprintw(0,sizeT.x-7+mod," "..pourcent.." % ")
+        nc.set_color(1)
     end
-    refresh()
+    nc.refresh()
 end
 
 function displayPositionSeting(boolPositionOrigine,sizeT)
@@ -155,17 +156,17 @@ function displayPositionSeting(boolPositionOrigine,sizeT)
     else
         str = "off"
     end
-    set_color(2)
-    mvprintw(sizeT.y-1,2," By default the position indicator will be "..str.." ")
-    set_color(1)
-    refresh()
+    nc.set_color(2)
+    nc.mvprintw(sizeT.y-1,2," By default the position indicator will be "..str.." ")
+    nc.set_color(1)
+    nc.refresh()
 end
 
 
 function clean(sizeT) --enlève tout ce qui peut nous déranger de l'écrant
     for x=0,sizeT.x+5 do
         for y=0,sizeT.y+5 do
-            mvprintw(y,x," ")
+            nc.mvprintw(y,x," ")
         end
     end
 end
@@ -206,8 +207,8 @@ function editCouleur(couleurs,boolFond,mod) --édite les couleurs et boolFond pe
             couleurs.texte = 0
         end
     end
-    init_pair(1,couleurs.texte,couleurs.fond)
-    init_pair(2,couleurs.fond,couleurs.texte)
+    nc.init_pair(1,couleurs.texte,couleurs.fond)
+    nc.init_pair(2,couleurs.fond,couleurs.texte)
 end
 
 function saveData(file,couleurs,boolPosition)

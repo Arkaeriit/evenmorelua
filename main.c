@@ -1,7 +1,6 @@
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
-#include "cursedLua.h"
 #include "readSTDIN.h"
 
 #define devel 0
@@ -13,9 +12,6 @@ int main(int argc,char** argv){
 
     // load Lua base libraries (print / math / etc)
     luaL_openlibs(L);
-
-    //On charge les fonctions custom
-    cl_include(L);
 
     //On charge le fichier
 #if devel == 1

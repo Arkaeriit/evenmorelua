@@ -8,6 +8,8 @@ This program let you choose the color theme you want and include word-warping to
 ![Alt text](https://i.imgur.com/bXeO2bS.png "Reading a file")
 
 ## Installation
+To install evenmorelua you need the librairy cursedLua available here: https://github.com/Arkaeriit/cursedLua.
+
 To install this just use 
 ```bash
 make && sudo make install
