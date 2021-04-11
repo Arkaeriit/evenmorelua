@@ -1,35 +1,46 @@
-FLAGS = -Wall -Werror
-CL = -lcursedLua
-LUA = -llua -lm -ldl
+# Flags
+FLAGS := -Wall -Werror
+NC := -lncursesw
+LUA := -llua -lm -ldl  
 
-all : evenmorelua
+# Files lists
+C_SRC := main.c cursedLua.c readSTDIN.c
+C_OBJS := $(C_SRC:%.c=%.o)
+LUA_SRC := evenmore.lua
+LUA_OBJS := $(LUA_SRC:%.lua=%.luac)
 
-evenmorelua : main.o readSTDIN.o evenmore.lua evenmore.luac
-	gcc main.o readSTDIN.o $(CL) $(LUA) -o evenmorelua
+# Install targets
+TARGET_DIR := /usr/local/share/evenmorelua
+TARGET_DIR_BIN := /usr/local/bin
+TARGET_BIN := $(TARGET_DIR_BIN)/evenmorelua
 
-evenmore.luac : evenmore.lua
-	luac -o evenmore.luac evenmore.lua
+# Commands
+CC := gcc
+CP := cp -f
+RM := rm -rf
 
-main.o : main.c
-	gcc -c main.c $(FLAGS) -o main.o
+all : evenmorelua.bin
 
-readSTDIN.o : readSTDIN.c readSTDIN.h
-	gcc -c readSTDIN.c $(FLAGS) -o readSTDIN.o
+%.luac : %.lua
+	luac -o $@ $<
 
-clean :
-	rm -f *.o
-	rm -f *.luac
-	rm -f evenmorelua
+%.o : %.c
+	$(CC) -c $< $(FLAGS) -o $@
 
-test : clean evenmorelua
-	./evenmorelua main.c
+evenmorelua.bin : $(C_OBJS) $(LUA_OBJS)
+	$(CC) $(C_OBJS) $(FLAGS) $(NC) $(LUA) -o $@
 
-install : evenmorelua evenmore.luac
-	mkdir -p /usr/local/share/evenmorelua
-	cp -f evenmorelua /usr/local/bin
-	cp -f evenmore.luac /usr/local/share/evenmorelua
-	
-uninstall : clean
-	rm -fR /usr/local/share/evenmorelua
-	rm -f /usr/local/bin/evenmorelua
-	
+install :
+	mkdir -p $(TARGET_DIR) $(TARGET_DIR_BIN)
+	$(CP) $(LUA_OBJS) $(TARGET_DIR)
+	$(CP) evenmorelua.bin $(TARGET_BIN)
+
+uninstall :
+	$(RM) $(TARGET_DIR)
+	$(RM) $(TARGET_BIN)
+
+clean : 
+	$(RM) *.bin
+	$(RM) *.o
+	$(RM) *.luac
+

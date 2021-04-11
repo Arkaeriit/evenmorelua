@@ -1,5 +1,3 @@
-nc = require("cursedLua")
-
 function main(fichier)
     nc.initscr() --on démare ncurses
     nc.noecho()

@@ -2,8 +2,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 #include "readSTDIN.h"
-
-#define devel 0
+#include "cursedLua.h"
 
 int main(int argc,char** argv){
     lua_State* L;
@@ -12,13 +11,12 @@ int main(int argc,char** argv){
 
     // load Lua base libraries (print / math / etc)
     luaL_openlibs(L);
+    luaopen_cursedLua(L);
+    lua_setglobal(L, "nc");
 
     //On charge le fichier
-#if devel == 1
-    luaL_dofile(L,"evenmore.lua");
-#else
     luaL_dofile(L,"/usr/local/share/evenmorelua/evenmore.luac");
-#endif
+    luaL_dofile(L,"evenmore.lua");
 
     if(argc == 2){ //On lit un fichier
         //On appelle la fonction
